@@ -5,6 +5,9 @@ import { showToast } from '@/utils/toast';
 import { Berkshire_Swash } from "next/font/google";
 import { useRouter } from 'next/navigation';
 import { signUp } from '@/services/auth';
+import Link from 'next/link';
+import { useDispatch } from 'react-redux';
+import { setUser } from '@/store/slices/userSlice';
 
 const berkshire_swash = Berkshire_Swash({ subsets: ["latin"], weight: ["400"] });
 
@@ -15,6 +18,7 @@ export default function SignUp(): React.JSX.Element {
     const [password, setPassword] = useState('');
     const [inProgress, setInProgress] = useState(false);
     const router = useRouter();
+    const dispatch = useDispatch();
 
     const [errors, setErrors] = useState({
         firstName: '',
@@ -62,7 +66,7 @@ export default function SignUp(): React.JSX.Element {
             email: '',
             password: '',
         });
-        
+
         return true;
     }
 
@@ -75,14 +79,14 @@ export default function SignUp(): React.JSX.Element {
             return;
         }
 
-        const response = await signUp({firstName, lastName, email, password});
+        const response = await signUp({ firstName, lastName, email, password });
 
-        if (!response.success) {
+        if (!response.success || !response.user) {
             showToast(response.message || 'Something went wrong', 'error');
-
         } else {
             showToast('Sign up successful! Redirecting...', 'success');
             localStorage.setItem('token', response.token);
+            dispatch(setUser(response.user))
             router.push('/');
         }
 
@@ -174,7 +178,7 @@ export default function SignUp(): React.JSX.Element {
                         <div className="px-4 pb-2 pt-4 text-white flex justify-center">
                             <button
                                 type='submit'
-                                className="w-full p-3 text-lg rounded-full bg-indigo-500 hover:bg-indigo-600 flex justify-center focus:outline-none"
+                                className="w-full p-3 text-lg rounded-full bg-indigo-500 hover:bg-indigo-600 flex justify-center cursor-pointer focus:outline-none"
                                 disabled={inProgress}
                             >
                                 {inProgress ? (
@@ -191,6 +195,16 @@ export default function SignUp(): React.JSX.Element {
                                     <span>SIGN UP</span>
                                 )}
                             </button>
+                        </div>
+
+                        {/* Already have an account? Login */}
+                        <div className="pt-2 flex justify-center">
+                            <Link
+                                className="text-indigo-600 hover:underline text-sm cursor-pointer"
+                                href="/auth/login"
+                            >
+                                Already have an account? Login
+                            </Link>
                         </div>
                     </form>
                 </div>

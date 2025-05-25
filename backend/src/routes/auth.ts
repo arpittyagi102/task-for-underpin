@@ -25,8 +25,9 @@ router.post("/register", (async (req: Request, res: Response) => {
     await user.save();
 
     const token = createJWTToken(user._id);
+    const userToReturn = {firstName, lastName, email}
 
-    res.status(201).json({ token });
+    res.status(201).json({ user:userToReturn, token });
   } catch (error) {
     console.error("Registration error:", error);
     res.status(500).json({ message: "Server error" });
@@ -45,8 +46,13 @@ router.post("/login", (async (req: Request, res: Response) => {
       return res.status(400).json({ message: "Invalid credentials" });
 
     const token = createJWTToken(user._id);
+    const userToReturn = {
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email
+    }
 
-    res.json({ token });
+    res.json({ user: userToReturn, token });
   } catch (error) {
     res.status(500).json({ message: "Server error" });
   }

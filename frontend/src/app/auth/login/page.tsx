@@ -5,6 +5,9 @@ import { Berkshire_Swash } from "next/font/google";
 import { showToast } from '@/utils/toast';
 import { useRouter } from 'next/navigation';
 import { login } from '@/services/auth';
+import Link from 'next/link';
+import { useDispatch } from 'react-redux';
+import { setUser } from '@/store/slices/userSlice';
 
 const berkshire_swash = Berkshire_Swash({ subsets: ["latin"], weight: ["400"]});
 
@@ -15,7 +18,9 @@ export default function Home(): React.JSX.Element {
 
     const [emailError, setEmailError] = useState(false);
     const [passwordError, setPasswordError] = useState(false);
+
     const router = useRouter();
+    const dispatch = useDispatch();
 
     async function handleLogin(e: FormEvent<HTMLFormElement>): Promise<void> {
         setInProgress(true);
@@ -35,12 +40,13 @@ export default function Home(): React.JSX.Element {
         
         const response = await login(email, password);
         
-        if (!response.success) {
+        if (!response.success || !response.user) {
             showToast(response.message || 'Something went wrong', 'error');
 
         } else {
             showToast('Sign up successful! Redirecting...', 'success');
             localStorage.setItem('token', response.token);
+            dispatch(setUser(response.user))
             router.push('/');
         }
         
@@ -89,6 +95,16 @@ export default function Home(): React.JSX.Element {
                                     <span>LOG IN</span>
                                 )}
                             </button>
+                        </div>
+
+                        {/* Don't have an account? Sign Up */}
+                        <div className="pt-2 flex justify-center">
+                            <Link
+                                className="text-indigo-600 hover:underline text-sm cursor-pointer"
+                                href="/auth/signup"
+                            >
+                                Don&apos;t have an account? SignUp
+                            </Link>
                         </div>
                     </form>
                 </div>

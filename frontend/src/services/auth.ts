@@ -1,6 +1,7 @@
 import { API_URL } from "@/utils/constants";
+import { User, UserCredentials } from "@/types";
 
-export async function signUp(data: SignUpPayload): Promise<AuthResponse> {
+export async function signUp(data: UserCredentials): Promise<AuthResponse> {
     try {
         const response = await fetch(API_URL + "/auth/register", {
             method: "POST",
@@ -19,10 +20,11 @@ export async function signUp(data: SignUpPayload): Promise<AuthResponse> {
             };
         }
 
-        return { success: true, token: result.token };
+        return { success: true, token: result.token, user: result.user };
         
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
+        error.message = customError(error.message);
         return { success: false, message: error.message || "Network error", token: "" };
     }
 }
@@ -37,6 +39,7 @@ export async function login(email: string, password: string): Promise<AuthRespon
             body: JSON.stringify({ email, password }),
         });
         const result = await response.json();
+        console.log("Login response:", result);
 
         if (!response.ok || !result.token) {
             return {
@@ -46,19 +49,19 @@ export async function login(email: string, password: string): Promise<AuthRespon
             };
         }
 
-        return { success: true, token: result.token };
+        return { success: true, token: result.token, user: result.user };
         
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
+        error.message = customError(error.message);
         return { success: false, message: error.message || "Network error", token: "" };
     }
 }
 
-type SignUpPayload = {
-    firstName: string;
-    lastName: string;
-    email: string;
-    password: string;
-};
+function customError(message: string): string {
+    return message == "Failed to fetch"
+        ? "Backend is not running or unreachable"
+        : message;
+}
 
-type AuthResponse = { success: boolean; token: string, message?: string }
+type AuthResponse = { success: boolean; token: string, message?: string, user?: User}
