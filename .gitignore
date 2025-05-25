@@ -1,0 +1,12 @@
+# Node modules for both frontend and backend
+node_modules/
+**/node_modules/
+
+# Next.js build output
+.next/
+out/
+
+# Express build output 
+dist/
+build/
+
