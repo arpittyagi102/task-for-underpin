@@ -1,12 +1,12 @@
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
-import authRoutes from "./routes/auth";
+import authRoutes from "./routes/auth.routes";
 import connectDB from "./utils/mongoose";
 import { checkENV } from "./utils/lib";
 import { FRONTEND_URL } from "./utils/constants";
 
-dotenv.config();
+dotenv.config({ path: '.env.local' });
 const app = express();
 const PORT = process.env.PORT || 3001;
 

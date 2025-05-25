@@ -11,7 +11,7 @@ const Header = () => {
 
     const handleSignOut = () => {
         dispatch(clearUser());
-        router.push('/login');
+        router.push('/auth/login');
     };
 
     return (
