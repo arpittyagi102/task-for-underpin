@@ -1,8 +1,10 @@
 "use client";
 
-import React, { useState, useRef, FormEvent } from 'react';
+import React, { useState, FormEvent } from 'react';
 import { Berkshire_Swash } from "next/font/google";
 import { showToast } from '@/utils/toast';
+import { useRouter } from 'next/navigation';
+import { login } from '@/services/auth';
 
 const berkshire_swash = Berkshire_Swash({ subsets: ["latin"], weight: ["400"]});
 
@@ -13,41 +15,36 @@ export default function Home(): React.JSX.Element {
 
     const [emailError, setEmailError] = useState(false);
     const [passwordError, setPasswordError] = useState(false);
+    const router = useRouter();
 
-    const emailInputRef = useRef<HTMLInputElement>(null);
-    const passwordInputRef = useRef<HTMLInputElement>(null); 
-
-    const handleLogin = async (e: FormEvent) => {
+    async function handleLogin(e: FormEvent<HTMLFormElement>): Promise<void> {
         setInProgress(true);
         e.preventDefault();
         if (!email) {
-            if (emailInputRef.current) {
-                emailInputRef.current.focus(); 
-                setEmailError(true);
-            }
+            setEmailError(true);
             showToast('Email is required', 'error');
             setInProgress(false);
             return;
         }
         if (!password) {
-            if (passwordInputRef.current) {
-                passwordInputRef.current.focus();
-                setPasswordError(true);
-            }
+            setPasswordError(true);
             showToast('Password is required', 'error');
             setInProgress(false);
             return;
         }
         
-        // log in logic
+        const response = await login(email, password);
+        
+        if (!response.success) {
+            showToast(response.message || 'Something went wrong', 'error');
 
-        setInProgress(false);
-
-        if(true){
-            showToast('Logged in successfully', 'success');
         } else {
-            showToast('Invalid credentials', 'error');
+            showToast('Sign up successful! Redirecting...', 'success');
+            localStorage.setItem('token', response.token);
+            router.push('/');
         }
+        
+        setInProgress(false);
     }
 
     return (
@@ -70,10 +67,10 @@ export default function Home(): React.JSX.Element {
 
                     <form className="w-full px-4 lg:px-0" onSubmit={handleLogin}>
                         <div className="pb-2 pt-4">
-                            <input ref={emailInputRef} className={`block w-full p-4 text-lg rounded-xl bg-neutral-300 focus:outline-none ${emailError ? 'border-2 border-red-500' : ''}`} type="email" name="email" id="email" placeholder="Email" value={email} onChange={(e) => {setEmail(e.target.value); e.target.style.border = "none"}}/>
+                            <input className={`block w-full p-4 text-lg rounded-xl bg-neutral-300 focus:outline-none ${emailError ? 'border-2 border-red-500' : ''}`} type="email" name="email" id="email" placeholder="Email" value={email} onChange={(e) => {setEmail(e.target.value); e.target.style.border = "none"}}/>
                         </div>
                         <div className="pb-2 pt-4">
-                            <input ref={passwordInputRef} className={`block w-full p-4 text-lg rounded-xl bg-neutral-300 focus:outline-none ${passwordError ? 'border-2 border-red-500' : ''}`} type="password" name="password" id="password" placeholder="Password" value={password} onChange={(e) => {setPassword(e.target.value);  e.target.style.border = "none"}}/>
+                            <input className={`block w-full p-4 text-lg rounded-xl bg-neutral-300 focus:outline-none ${passwordError ? 'border-2 border-red-500' : ''}`} type="password" name="password" id="password" placeholder="Password" value={password} onChange={(e) => {setPassword(e.target.value);  e.target.style.border = "none"}}/>
                         </div>
 
                         <div className="px-4 pb-2 pt-4 text-white flex justify-center">

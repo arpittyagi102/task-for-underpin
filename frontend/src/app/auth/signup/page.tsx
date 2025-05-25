@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useState, useRef, FormEvent } from 'react';
+import React, { useState, FormEvent } from 'react';
 import { showToast } from '@/utils/toast';
 import { Berkshire_Swash } from "next/font/google";
 import { useRouter } from 'next/navigation';
+import { signUp } from '@/services/auth';
 
 const berkshire_swash = Berkshire_Swash({ subsets: ["latin"], weight: ["400"] });
 
@@ -74,14 +75,17 @@ export default function SignUp(): React.JSX.Element {
             return;
         }
 
-        // sign up logic
+        const response = await signUp({firstName, lastName, email, password});
 
-        
-        if (true) {
-            showToast('Logged in successfully', 'success');
+        if (!response.success) {
+            showToast(response.message || 'Something went wrong', 'error');
+
         } else {
-            showToast('Invalid credentials', 'error');
+            showToast('Sign up successful! Redirecting...', 'success');
+            localStorage.setItem('token', response.token);
+            router.push('/');
         }
+
         setInProgress(false);
     }
 
