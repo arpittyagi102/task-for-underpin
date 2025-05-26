@@ -108,7 +108,7 @@ export default function SignUp(): React.JSX.Element {
             <div className="w-full lg:max-w-[600px] flex items-center justify-center text-center px-auto lg:px-36 z-0 bg-white text-black">
                 <div className="py-6 z-20 w-[400px]">
                     <h1 className={`logo my-6 text-5xl ${berkshire_swash.className}`}>
-                        Project_Name
+                        Banana Clicker
                     </h1>
 
                     {/* Signup Form */}

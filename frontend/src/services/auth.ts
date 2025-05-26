@@ -3,7 +3,7 @@ import { User, UserCredentials } from "@/types";
 
 export async function signUp(data: UserCredentials): Promise<AuthResponse> {
     try {
-        const response = await fetch(API_URL + "/auth/register", {
+        const response = await fetch(API_URL + "/api/auth/register", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -31,7 +31,7 @@ export async function signUp(data: UserCredentials): Promise<AuthResponse> {
 
 export async function login(email: string, password: string): Promise<AuthResponse> {
     try {
-        const response = await fetch(API_URL + "/auth/login", {
+        const response = await fetch(API_URL + "/api/auth/login", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -60,7 +60,7 @@ export async function login(email: string, password: string): Promise<AuthRespon
 
 export async function validateToken(token: string): Promise<AuthResponse> {
     try {
-        const response = await fetch(API_URL + "/auth/validate-token", {
+        const response = await fetch(API_URL + "/api/auth/validate-token", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

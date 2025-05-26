@@ -20,7 +20,7 @@ const Header = () => {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between items-center h-16">
                     <div className="flex-shrink-0">
-                        <h1 className="text-xl font-bold">Project_Name</h1>
+                        <Link href='/' className="text-xl font-bold">Banana Clicker</Link>
                     </div>
                     <div className="flex items-center space-x-4">
                         {isAuthenticated && user ? (
@@ -36,7 +36,7 @@ const Header = () => {
                                 </button>
                             </>
                         ) : (
-                            <Link 
+                            <Link
                                 href="/auth/signup"
                                 className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer"
                             >

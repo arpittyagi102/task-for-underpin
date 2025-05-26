@@ -6,7 +6,7 @@ import authMiddleware, { AuthRequest } from "../middleware/auth";
 const router = Router();
 router.post("/register", (async (req: Request, res: Response) => {
     try {
-        const { firstName, lastName, email, password } = req.body;
+        const { firstName, lastName, email, password, bananaCount } = req.body;
 
         if (!email || !password) {
             return res.status(400).json({ message: "Email and password are required" });
@@ -22,11 +22,11 @@ router.post("/register", (async (req: Request, res: Response) => {
         let user = await User.findOne({ email });
         if (user) return res.status(400).json({ message: "User already exists" });
 
-        user = new User({ firstName, lastName, email, password });
+        user = new User({ firstName, lastName, email, password, bananaCount: bananaCount || 0 });
         await user.save();
 
         const token = createJWTToken(user._id);
-        const userToReturn = { firstName, lastName, email }
+        const userToReturn = { _id: user._id, firstName, lastName, email, bananaCount: user.bananaCount }
 
         res.status(201).json({ user: userToReturn, token });
     } catch (error) {
@@ -48,9 +48,11 @@ router.post("/login", (async (req: Request, res: Response) => {
 
         const token = createJWTToken(user._id);
         const userToReturn = {
+            _id : user._id,
             firstName: user.firstName,
             lastName: user.lastName,
-            email: user.email
+            email: user.email,
+            bananaCount: user.bananaCount || 0
         }
 
         res.json({ user: userToReturn, token });
@@ -72,9 +74,11 @@ router.post('/validate-token', authMiddleware, (async (req: AuthRequest, res: Re
     }
 
     const userToReturn = {
+        _id: user._id,
         firstName: user.firstName,
         lastName: user.lastName,
-        email: user.email
+        email: user.email,
+        bananaCount: user.bananaCount || 0
     }
 
     res.json({ user:userToReturn });
