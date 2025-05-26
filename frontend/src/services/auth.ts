@@ -58,6 +58,34 @@ export async function login(email: string, password: string): Promise<AuthRespon
     }
 }
 
+export async function validateToken(token: string): Promise<AuthResponse> {
+    try {
+        const response = await fetch(API_URL + "/auth/validate-token", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": token
+            },
+        });
+        const result = await response.json();
+
+        if (!response.ok) {
+            return {
+                success: false,
+                token: "",
+                message: result.message || "Something went wrong",
+            };
+        }
+
+        return { success: true, token: token, user: result.user };
+        
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+        error.message = customError(error.message);
+        return { success: false, message: error.message || "Network error", token: "" };
+    }
+}
+
 function customError(message: string): string {
     return message == "Failed to fetch"
         ? "Backend is not running or unreachable"

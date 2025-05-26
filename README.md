@@ -54,6 +54,7 @@ A modern full-stack starter template featuring Next.js for the frontend and Expr
 │   └── package.json                 # Backend dependencies
 │ 
 └── package.json                     # Root package.json for workspace
+```
 
 
 ## 🛠️ Prerequisites

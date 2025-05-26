@@ -10,6 +10,7 @@ const Header = () => {
     const { user, isAuthenticated } = useAppSelector((state) => state.user);
 
     const handleSignOut = () => {
+        localStorage.removeItem('token')
         dispatch(clearUser());
         router.push('/auth/login');
     };
@@ -29,7 +30,7 @@ const Header = () => {
                                 </span>
                                 <button
                                     onClick={handleSignOut}
-                                    className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors"
+                                    className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer"
                                 >
                                     Sign Out
                                 </button>
@@ -37,7 +38,7 @@ const Header = () => {
                         ) : (
                             <Link 
                                 href="/auth/signup"
-                                className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors"
+                                className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer"
                             >
                                 Sign In
                             </Link>
