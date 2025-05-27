@@ -15,6 +15,7 @@ export default function SignUp(): React.JSX.Element {
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [email, setEmail] = useState('');
+    const [role, setRole] = useState('user');
     const [password, setPassword] = useState('');
     const [inProgress, setInProgress] = useState(false);
     const router = useRouter();
@@ -79,7 +80,7 @@ export default function SignUp(): React.JSX.Element {
             return;
         }
 
-        const response = await signUp({ firstName, lastName, email, password });
+        const response = await signUp({ firstName, lastName, role, email, password });
 
         if (!response.success || !response.user) {
             showToast(response.message || 'Something went wrong', 'error');
@@ -172,6 +173,15 @@ export default function SignUp(): React.JSX.Element {
                                     e.target.style.border = "none"
                                 }}
                             />
+                        </div>
+
+                        {/* Role Selection */}
+                        <div className="pb-1 pt-4">
+                            <label className="float-start text-sm">Role</label>
+                            <input type="radio" name="role" id="user" value="user" checked={role === 'user'} onChange={(e) => setRole(e.target.value)} />
+                            <label htmlFor="user" className="ml-2">User</label>
+                            <input type="radio" name="role" id="admin" value="admin" checked={role === 'admin'} onChange={(e) => setRole(e.target.value)} className="ml-4" />
+                            <label htmlFor="admin" className="ml-2">Admin</label>
                         </div>
 
                         {/* SIGN UP BUTTON */}

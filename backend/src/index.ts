@@ -23,7 +23,7 @@ app.use(
   })
 );
 
-const io = new Server(server, {
+export const io = new Server(server, {
   cors: {
     origin: FRONTEND_URL,
     methods: ["GET", "POST"],

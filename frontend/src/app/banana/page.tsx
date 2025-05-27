@@ -2,12 +2,13 @@
 import React, { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { increaseBanana } from '@/store/slices/bananaSlice';
+import { setBanana } from '@/store/slices/bananaSlice';
 import { getSocket } from '@/utils/socket';
 import Header from '@/components/Header';
 
 export default function Page() {
     const bananaCount = useAppSelector((state) => state.banana);
+    const userState = useAppSelector((state) => state.user);
     const dispatch = useAppDispatch();
     const router = useRouter();
 
@@ -19,15 +20,21 @@ export default function Page() {
             router.push('/');
         }
 
-        dispatch(increaseBanana(1));
+        dispatch(setBanana(bananaCount + 1));
     }
 
     useEffect(() => {
         const socket = getSocket();
-        if(!socket) {
+        if (!socket || !userState.isAuthenticated || !userState.user) {
             router.push('/');
+            return;
         }
-    });
+
+        socket?.emit('qs-bananaCount');;
+        socket?.on('ans-bananaCount', (data) => {
+            dispatch(setBanana(data.count));
+        });
+    }, []);
 
     return (
         <main className="flex flex-col min-h-screen">

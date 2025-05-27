@@ -2,29 +2,24 @@
 import { Provider } from 'react-redux';
 import { store } from '@/store/store';
 import { Toaster } from 'react-hot-toast';
-import { useAppSelector } from "@/store/hooks";
-import { useSocket } from "@/hooks/useSocket";
 import { useInitializeAuth } from "@/store/hooks";
+import { SocketProvider } from '@/contexts/SocketContext';
 
 export default function Providers({ children }: { children: React.ReactNode }) {
+
     return (
         <Provider store={store}>
-            <SocketProvider>
-                {children}
-            </SocketProvider>
+            <InitializingAuth>
+                <SocketProvider>
+                    {children}
+                </SocketProvider>
+            </InitializingAuth>
             <Toaster />
         </Provider>
     );
 }
 
-function SocketProvider({ children }: { children: React.ReactNode }) {
+function InitializingAuth({children}: {children: React.ReactNode}) {
     useInitializeAuth();
-    const { user, isAuthenticated } = useAppSelector((state) => state.user);
-    useSocket(user, isAuthenticated);
-
-    return (
-        <Provider store={store}>
-            {children}
-        </Provider>
-    );
+    return children;
 }

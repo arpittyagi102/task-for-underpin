@@ -4,8 +4,10 @@ import bcrypt from "bcryptjs";
 export interface IUser extends Document {
   firstName: string;
   lastName: string;
+  role: 'user' | 'admin';
   email: string;
   password: string;
+  createdAt?: Date;
   bananaCount?: number;
   blocked?: boolean;
   comparePassword(candidatePassword: string): Promise<boolean>;
@@ -17,6 +19,7 @@ const UserSchema: Schema<IUser> = new Schema(
     lastName: { type: String, required: false, trim: true },
     email: { type: String, required: true, unique: true, lowercase: true },
     password: { type: String, required: true },
+    role: { type: String, enum: ['user', 'admin'], default: 'user' },
     bananaCount: { type: Number, default: 0 },
     blocked: { type: Boolean, default: false },
   },

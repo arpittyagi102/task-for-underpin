@@ -8,7 +8,7 @@ import { login } from '@/services/auth';
 import Link from 'next/link';
 import { useDispatch } from 'react-redux';
 import { setUser } from '@/store/slices/userSlice';
-import { increaseBanana } from '@/store/slices/bananaSlice';
+import { setBanana } from '@/store/slices/bananaSlice';
 
 const berkshire_swash = Berkshire_Swash({ subsets: ["latin"], weight: ["400"] });
 
@@ -48,7 +48,7 @@ export default function Home(): React.JSX.Element {
             showToast('Sign up successful! Redirecting...', 'success');
             localStorage.setItem('token', response.token);
             dispatch(setUser(response.user));
-            dispatch(increaseBanana(response.user.bananaCount));
+            dispatch(setBanana(response.user.bananaCount));
             router.push('/');
         }
 

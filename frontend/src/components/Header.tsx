@@ -2,16 +2,20 @@
 import { useRouter } from 'next/navigation';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { clearUser } from '@/store/slices/userSlice';
+import { useSocketContext } from '@/contexts/SocketContext';
 import Link from 'next/link';
 
 const Header = () => {
     const router = useRouter();
     const dispatch = useAppDispatch();
     const { user, isAuthenticated } = useAppSelector((state) => state.user);
+    const { socket } = useSocketContext();
 
     const handleSignOut = () => {
         localStorage.removeItem('token')
         dispatch(clearUser());
+        socket?.disconnect();
+        socket?.off();
         router.push('/auth/login');
     };
 
@@ -22,6 +26,21 @@ const Header = () => {
                     <div className="flex-shrink-0">
                         <Link href='/' className="text-xl font-bold">Banana Clicker</Link>
                     </div>
+
+                    <div className="flex items-center space-x-4">
+                        {(isAuthenticated && user && user.role == 'admin') && (
+                            <Link href="/users" className="text-gray-300 hover:text-white transition-colors">
+                                Users
+                            </Link>
+                        )}
+
+                        {(isAuthenticated && user && user.role == 'user') && (
+                            <Link href="/leaderboard" className="text-gray-300 hover:text-white transition-colors">
+                                Leaderboard
+                            </Link>
+                        )}
+                    </div>
+
                     <div className="flex items-center space-x-4">
                         {isAuthenticated && user ? (
                             <>
